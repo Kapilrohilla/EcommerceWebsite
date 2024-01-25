@@ -1,11 +1,13 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Auth from "./pages/Auth";
+import Home from "./pages/Home";
+import { ThemeProvider } from "@material-tailwind/react";
 
 const App = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <div>Hello world!</div>,
+      element: <Home />,
     },
     {
       path: "/auth",
@@ -13,7 +15,11 @@ const App = () => {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 };
 
 export default App;
