@@ -2,6 +2,7 @@ import { Button, Typography, IconButton } from "@material-tailwind/react";
 import HeroSection from "../components/HeroSection";
 import { Topbar } from "../components/Topbar";
 import Card from "../components/Card";
+import { Footer } from "../components/Footer";
 
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import ProductCard from "../components/ProductCard";
@@ -82,6 +83,7 @@ const Home = () => {
           />
         </div>
       </div>
+      <Footer />
     </>
   );
 };
