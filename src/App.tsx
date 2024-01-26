@@ -6,6 +6,7 @@ import Checkout from "./pages/Checkout";
 import Address from "./pages/Address";
 import { Topbar } from "./components/Topbar";
 import { Footer } from "./components/Footer";
+import ProductListing from "./pages/ProductListing";
 
 const Layout = () => {
   return (
@@ -35,19 +36,15 @@ const App = () => {
           path: "address",
           element: <Address />,
         },
+        {
+          path: "products",
+          element: <ProductListing />,
+        },
       ],
     },
     {
       path: "/auth",
       element: <Auth />,
-    },
-    {
-      path: "/checkout",
-      element: <Checkout />,
-    },
-    {
-      path: "/shipping-add",
-      element: <Address />,
     },
   ]);
 
