@@ -33,7 +33,6 @@ const categoryCard = [
 const Home = () => {
   return (
     <>
-      <Topbar />
       <HeroSection />
       <div className="m-5 md:m-20 ">
         <div className="flex flex-row items-center justify-between">
@@ -83,7 +82,6 @@ const Home = () => {
           />
         </div>
       </div>
-      <Footer />
     </>
   );
 };

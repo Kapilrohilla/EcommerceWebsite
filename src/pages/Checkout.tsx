@@ -1,11 +1,8 @@
 import { MinusIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Footer } from "../components/Footer";
-import { Topbar } from "../components/Topbar";
 
 const Checkout = () => {
   return (
     <>
-      <Topbar />
       <div className="m-4 lg:m-16 ">
         <h1 className="font text-3xl" style={{ fontWeight: "500" }}>
           Checkout
@@ -19,7 +16,6 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };
@@ -27,6 +23,7 @@ const Checkout = () => {
 export default Checkout;
 
 import { Button, Typography } from "@material-tailwind/react";
+import { Outlet } from "react-router-dom";
 
 const TABLE_HEAD = ["Product", "Price", "Qualit", "SubTotal", "Action"];
 
