@@ -213,8 +213,10 @@ export function Topbar() {
     );
   }, []);
 
-  const navigate = useNavigate();
-
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
   return (
     <Navbar placeholder={"something"} className=" w-full px-4 py-2 max-w-full">
       <div className="flex items-center justify-between text-blue-gray-900">
@@ -232,11 +234,8 @@ export function Topbar() {
           <IconButton variant="text">
             <ShoppingBagIcon className="h-6" />
           </IconButton>
-          <Button
-            className=" hidden lg:inline-block"
-            onClick={() => navigate("/auth")}
-          >
-            Login
+          <Button className=" hidden lg:inline-block" onClick={handleLogout}>
+            Logout
           </Button>
         </div>
         <IconButton
@@ -256,7 +255,7 @@ export function Topbar() {
         <NavList />
         {/* <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0  lg:flex-row lg:p-1 hidden lg:flex justify-end"> */}
         <div className="flex flex-row gap-5">
-          <Button>Login</Button>
+          <Button onClick={handleLogout}>Logout</Button>
         </div>
         {/* </List> */}
       </Collapse>
