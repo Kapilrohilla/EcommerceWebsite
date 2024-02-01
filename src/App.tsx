@@ -7,6 +7,7 @@ import Address from "./pages/Address";
 import { Topbar } from "./components/Topbar";
 import { Footer } from "./components/Footer";
 import ProductListing from "./pages/ProductListing";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const Layout = () => {
   return (
@@ -19,6 +20,7 @@ const Layout = () => {
 };
 
 const App = () => {
+  const isLoggedIn = false;
   const router = createBrowserRouter([
     {
       path: "/",
@@ -26,25 +28,37 @@ const App = () => {
       children: [
         {
           path: "/",
-          element: <Home />,
+          element: (
+            <ProtectedRoute isLoggedin={isLoggedIn}>
+              <Home />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "check",
-          element: <Checkout />,
+          element: (
+            <ProtectedRoute isLoggedin={isLoggedIn}>
+              <Checkout />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "address",
-          element: <Address />,
+          element: (
+            <ProtectedRoute isLoggedin={isLoggedIn}>
+              <Address />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "products",
-          element: <ProductListing />,
+          element: (
+            <ProtectedRoute isLoggedin={isLoggedIn}>
+              <ProductListing />
+            </ProtectedRoute>
+          ),
         },
       ],
-    },
-    {
-      path: "/auth",
-      element: <Auth />,
     },
   ]);
 
