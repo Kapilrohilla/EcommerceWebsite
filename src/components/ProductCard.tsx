@@ -1,5 +1,4 @@
 import { HeartIcon } from "@heroicons/react/24/outline";
-import { Button, IconButton, Typography } from "@material-tailwind/react";
 
 type ProductCardType = {
   image: string;
@@ -17,7 +16,7 @@ const ProductCard = ({
   discountedPrice,
 }: ProductCardType) => {
   return (
-    <div className="max-w-96 w-full rounded-t-md rounded-tr-md overflow-hidden my-3 cursor-pointer">
+    <div className=" min-w-96 w-full max-w-lg rounded-t-md rounded-tr-md overflow-hidden my-3 cursor-pointer">
       <div className="relative">
         <img src={image} className=" h-80 w-full object-cover" />
         <div className="absolute top-5 right-5 bg-white h-8 w-8 flex rounded-full items-center justify-center">

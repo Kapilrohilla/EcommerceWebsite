@@ -6,63 +6,29 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 const ProductListing = () => {
   return (
     <div>
-      <div className="m-5 md:m-20 ">
+      <div className="sm:m-5 m-1 md:m-20 ">
         <div className="flex flex-row items-center justify-center">
           <h2 className="text-2xl text-center font-semibold">Products</h2>
         </div>
-        <div className="my-10 flex flex-row flex-wrap gap-10 ">
-          <ProductCard
-            title="Shopping bag"
-            shortDescription="Women Textured Handheld bag"
-            price={80.8}
-            discountedPrice={60.6}
-            image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-          />
-          <ProductCard
-            title="Shopping bag"
-            shortDescription="Women Textured Handheld bag"
-            price={80.8}
-            discountedPrice={60.6}
-            image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-          />
-          <ProductCard
-            title="Shopping bag"
-            shortDescription="Women Textured Handheld bag"
-            price={80.8}
-            discountedPrice={60.6}
-            image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-          />
-          <ProductCard
-            title="Shopping bag"
-            shortDescription="Women Textured Handheld bag"
-            price={80.8}
-            discountedPrice={60.6}
-            image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-          />
-          <ProductCard
-            title="Shopping bag"
-            shortDescription="Women Textured Handheld bag"
-            price={80.8}
-            discountedPrice={60.6}
-            image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-          />
-          <ProductCard
-            title="Shopping bag"
-            shortDescription="Women Textured Handheld bag"
-            price={80.8}
-            discountedPrice={60.6}
-            image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-          />
-          <ProductCard
-            title="Shopping bag"
-            shortDescription="Women Textured Handheld bag"
-            price={80.8}
-            discountedPrice={60.6}
-            image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-          />
-        </div>
-        <div className="flex justify-center">
-          <DefaultPagination />
+        <div className="flex gap-5">
+          <div className="hidden md:flex ">
+            <div>
+              <AccordionCustomIcon />
+            </div>
+          </div>
+          <div>
+            <div className="flex flex-wrap gap-3 justify-center">
+              {[1, 2, 3, 4, 5, 6].map(() => (
+                <ProductCard
+                  title="Shopping bag"
+                  shortDescription="Women Textured Handheld bag"
+                  price={80.8}
+                  discountedPrice={60.6}
+                  image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -120,5 +86,83 @@ export function DefaultPagination() {
         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
       </Button>
     </div>
+  );
+}
+
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
+} from "@material-tailwind/react";
+
+function Icon({ id, open }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      className={`${
+        id === open ? "rotate-180" : ""
+      } h-5 w-5 transition-transform`}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+      />
+    </svg>
+  );
+}
+
+export function AccordionCustomIcon() {
+  const [open, setOpen] = useState(0);
+
+  const handleOpen = (value) => setOpen(open === value ? 0 : value);
+
+  return (
+    <>
+      <Accordion open={open === 1} icon={<Icon id={1} open={open} />}>
+        <AccordionHeader onClick={() => handleOpen(1)}>Brand</AccordionHeader>
+        <AccordionBody>
+          {/* <form> */}
+          {["Apple", "XPG", "Kingston", "A-DATA"].map((category) => {
+            return (
+              <div>
+                <input type="checkbox" name={category} id={category} />
+                &nbsp; <label htmlFor={category}>{category}</label>
+              </div>
+            );
+          })}
+          {/* </form> */}
+        </AccordionBody>
+      </Accordion>
+      <Accordion open={open === 2} icon={<Icon id={2} open={open} />}>
+        <AccordionHeader onClick={() => handleOpen(2)}>Price</AccordionHeader>
+        <AccordionBody>
+          {["under ₹1000", "₹1000 - ₹5000", "₹5000 - ₹10,000"].map((price) => (
+            <>
+              <button style={{ display: "block" }}>{price}</button>
+            </>
+          ))}
+        </AccordionBody>
+      </Accordion>
+      <Accordion open={open === 3} icon={<Icon id={3} open={open} />}>
+        <AccordionHeader onClick={() => handleOpen(3)}>
+          Category
+        </AccordionHeader>
+        <AccordionBody>
+          {["Mens", "Womens", "SmartPhone", "Appliances"].map((category) => {
+            return (
+              <div>
+                <input type="checkbox" name={category} id={category} />
+                &nbsp; <label htmlFor={category}>{category}</label>
+              </div>
+            );
+          })}
+        </AccordionBody>
+      </Accordion>
+    </>
   );
 }
