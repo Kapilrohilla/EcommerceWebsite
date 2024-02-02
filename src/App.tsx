@@ -20,7 +20,6 @@ const Layout = () => {
 };
 
 const App = () => {
-  const isLoggedIn = false;
   const [user, setUser] = useState<object | null>(null);
   useEffect(() => {
     const user = localStorage.getItem("user");

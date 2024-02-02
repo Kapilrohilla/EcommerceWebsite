@@ -10,6 +10,6 @@ const ProtectedRoute = ({ isLoggedin, children }: ProtectedRouteProps) => {
 
 export default ProtectedRoute;
 type ProtectedRouteProps = {
-  isLoggedin: boolean;
+  isLoggedin: boolean | unknown;
   children: React.JSX.Element;
 };
