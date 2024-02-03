@@ -1,9 +1,8 @@
 import { Typography } from "@material-tailwind/react";
-import React from "react";
 
 const Card = ({ title, imageSrc }: { title: string; imageSrc: string }) => {
   return (
-    <figure className="relative my-2 h-96 w-full mx-1 sm:w-[400px] cursor-pointer">
+    <figure className="relative my-2 h-96 w-full mx-1 sm:w-[400px] cursor-pointer shadow-md">
       <img
         className="h-full w-full  rounded-xl object-strech object-center"
         src={imageSrc}

@@ -1,9 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { Button, IconButton } from "@material-tailwind/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 const ProductListing = () => {
+  const [products, setProducts] = useState<object[]>([]);
+  const [category, setCategory] = useState<String>("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetch(import.meta.env.VITE_BASEURL + "/product", {
+      method: "GET",
+      signal,
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.valid) {
+          setProducts(data?.products);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   return (
     <div>
       <div className="sm:m-5 m-1 md:m-20 ">
@@ -18,14 +43,22 @@ const ProductListing = () => {
           </div>
           <div>
             <div className="flex flex-wrap gap-3 justify-center">
-              {[1, 2, 3, 4, 5, 6].map(() => (
+              {products.map((product: any) => (
                 <ProductCard
-                  title="Shopping bag"
-                  shortDescription="Women Textured Handheld bag"
-                  price={80.8}
-                  discountedPrice={60.6}
-                  image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
+                  key={product?.id}
+                  title={product?.name}
+                  shortDescription={product?.description}
+                  price={product?.price}
+                  discountedPrice={product?.price}
+                  image={product?.image}
                 />
+                // <ProductCard
+                //   title="Shopping bag"
+                //   shortDescription="Women Textured Handheld bag"
+                //   price={80.8}
+                //   discountedPrice={60.6}
+                //   image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
+                // />
               ))}
             </div>
           </div>
@@ -94,6 +127,8 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
+import { useDispatch } from "react-redux";
+import { populateCategory } from "../redux/category";
 
 function Icon({ id, open }) {
   return (
@@ -118,16 +153,62 @@ function Icon({ id, open }) {
 
 export function AccordionCustomIcon() {
   const [open, setOpen] = useState(0);
+  const [brands, setBrands] = useState<Array<String>>([]);
+  const [category, setCategory] = useState<String[]>([]);
+  const handleOpen = (value: any) => setOpen(open === value ? 0 : value);
+  const dispatch = useDispatch();
 
-  const handleOpen = (value) => setOpen(open === value ? 0 : value);
+  // effect for category
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const apiUrl = import.meta.env.VITE_BASEURL + "/product/category";
 
+    fetch(apiUrl, {
+      method: "GET",
+      signal,
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.valid) {
+          // dispatch(populateCategory(data?.categories));
+          setCategory(data?.categories);
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  // fetching brands name
+  useEffect(() => {
+    const contoller = new AbortController();
+    const signal = contoller.signal;
+    const apiUrl = `${import.meta.env.VITE_BASEURL}/product/brand`;
+
+    fetch(apiUrl, {
+      method: "GET",
+      signal,
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log(data);
+        if (data?.valid) {
+          setBrands(data?.brands);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
   return (
     <>
       <Accordion open={open === 1} icon={<Icon id={1} open={open} />}>
         <AccordionHeader onClick={() => handleOpen(1)}>Brand</AccordionHeader>
         <AccordionBody>
           {/* <form> */}
-          {["Apple", "XPG", "Kingston", "A-DATA"].map((category) => {
+          {brands.map((category) => {
             return (
               <div>
                 <input type="checkbox" name={category} id={category} />
@@ -138,7 +219,7 @@ export function AccordionCustomIcon() {
           {/* </form> */}
         </AccordionBody>
       </Accordion>
-      <Accordion open={open === 2} icon={<Icon id={2} open={open} />}>
+      {/* <Accordion open={open === 2} icon={<Icon id={2} open={open} />}>
         <AccordionHeader onClick={() => handleOpen(2)}>Price</AccordionHeader>
         <AccordionBody>
           {["under ₹1000", "₹1000 - ₹5000", "₹5000 - ₹10,000"].map((price) => (
@@ -147,13 +228,13 @@ export function AccordionCustomIcon() {
             </>
           ))}
         </AccordionBody>
-      </Accordion>
+      </Accordion> */}
       <Accordion open={open === 3} icon={<Icon id={3} open={open} />}>
         <AccordionHeader onClick={() => handleOpen(3)}>
           Category
         </AccordionHeader>
         <AccordionBody>
-          {["Mens", "Womens", "SmartPhone", "Appliances"].map((category) => {
+          {category.map((category) => {
             return (
               <div>
                 <input type="checkbox" name={category} id={category} />

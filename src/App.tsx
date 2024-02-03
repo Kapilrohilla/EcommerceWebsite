@@ -8,6 +8,8 @@ import { Footer } from "./components/Footer";
 import ProductListing from "./pages/ProductListing";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect, useState } from "react";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 const Layout = () => {
   return (
@@ -39,35 +41,19 @@ const App = () => {
       children: [
         {
           path: "/",
-          element: (
-            // <ProtectedRoute isLoggedin={isLoggedIn}>
-            <Home />
-            // </ProtectedRoute>
-          ),
+          element: <Home />,
         },
         {
           path: "check",
-          element: (
-            // <ProtectedRoute isLoggedin={isLoggedIn}>
-            <Checkout />
-            // </ProtectedRoute>
-          ),
+          element: <Checkout />,
         },
         {
           path: "address",
-          element: (
-            // <ProtectedRoute isLoggedin={isLoggedIn}>
-            <Address />
-            // </ProtectedRoute>
-          ),
+          element: <Address />,
         },
         {
           path: "products",
-          element: (
-            // <ProtectedRoute isLoggedin={isLoggedIn}>
-            <ProductListing />
-            // </ProtectedRoute>
-          ),
+          element: <ProductListing />,
         },
       ],
     },
@@ -75,7 +61,9 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </ThemeProvider>
   );
 };

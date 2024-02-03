@@ -26,19 +26,9 @@ import {
   HeartIcon,
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const navListMenuItems = [
-  {
-    title: "Mens Fashion",
-    description: "Find perfect size, with quality cloth for men.",
-    icon: UserCircleIcon,
-  },
-  {
-    title: "Beauty, Health",
-    description: "Buy the beauty and Wellness products",
-    icon: GlobeAsiaAustraliaIcon,
-  },
   {
     title: "Electronics",
     description: "Buy Home appliances, other products",
@@ -213,6 +203,7 @@ export function Topbar() {
     );
   }, []);
 
+  const navigation = useNavigate();
   const handleLogout = () => {
     localStorage.clear();
     window.location.reload();
@@ -220,7 +211,13 @@ export function Topbar() {
   return (
     <Navbar placeholder={"something"} className=" w-full px-4 py-2 max-w-full">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <img src="/images/logo.png" className="h-10 w-20 object-contain" />
+        <img
+          src="/images/logo.png"
+          className="h-10 w-20 object-contain"
+          onClick={() => {
+            navigation("/");
+          }}
+        />
         <div className="hidden lg:block">
           <NavList />
         </div>
