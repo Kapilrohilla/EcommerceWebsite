@@ -8,8 +8,9 @@ import { Footer } from "./components/Footer";
 import ProductListing from "./pages/ProductListing";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect, useState } from "react";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import store from "./redux/store";
+import { populateUser } from "./redux/userSlice";
 
 const Layout = () => {
   return (
@@ -22,19 +23,23 @@ const Layout = () => {
 };
 
 const App = () => {
-  const [user, setUser] = useState<object | null>(null);
+  // const [user, setUser] = useState<object | null>(null);
+  const user = store.getState().user;
+  const [login, setLogin] = useState(false);
+
+  const dispatch = useDispatch();
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
-      console.log(user);
-      setUser(JSON.parse(user));
+      setLogin(true);
+      dispatch(populateUser(JSON.parse(user)));
     }
   }, []);
   const router = createBrowserRouter([
     {
       path: "/",
       element: (
-        <ProtectedRoute isLoggedin={user}>
+        <ProtectedRoute isLoggedin={login}>
           <Layout />
         </ProtectedRoute>
       ),
@@ -61,9 +66,7 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
+      <RouterProvider router={router} />
     </ThemeProvider>
   );
 };
