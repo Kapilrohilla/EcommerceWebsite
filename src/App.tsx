@@ -52,7 +52,7 @@ const App = () => {
           element: <Home />,
         },
         {
-          path: "check",
+          path: "cart",
           element: <Checkout />,
         },
         {

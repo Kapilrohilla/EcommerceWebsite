@@ -9,10 +9,13 @@ const cartSlice = createSlice({
     },
     // @ts-ignore
     add2cart: function (state, action) {
+      console.log(state);
       return [...state, { product: action.payload, quantity: 1 }];
     },
+    //@ts-ignore
+    updateCart: function (state, action) {},
   },
 });
 
-export const { populateCart, add2cart } = cartSlice.actions;
+export const { populateCart, add2cart, updateCart } = cartSlice.actions;
 export default cartSlice.reducer;

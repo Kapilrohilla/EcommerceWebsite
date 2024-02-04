@@ -27,7 +27,7 @@ import {
   HeartIcon,
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 const navListMenuItems = [
   {
@@ -180,7 +180,7 @@ export function Topbar() {
   return (
     <Navbar
       placeholder={"something"}
-      className="fixed z-50 w-full px-4 py-2 max-w-full"
+      className="fixed z-50 w-full px-4 py-2 max-w-full top-0"
     >
       <div className="flex items-center justify-between text-blue-gray-900">
         <img
@@ -200,11 +200,13 @@ export function Topbar() {
           <IconButton variant="text">
             <HeartIcon className="h-6" />
           </IconButton>
-          <Badge content={cartLength}>
-            <IconButton variant="text">
-              <ShoppingBagIcon className="h-6" />
-            </IconButton>
-          </Badge>
+          <Link to="/cart">
+            <Badge content={cartLength}>
+              <IconButton variant="text">
+                <ShoppingBagIcon className="h-6" />
+              </IconButton>
+            </Badge>
+          </Link>
           <Button className=" hidden lg:inline-block" onClick={handleLogout}>
             Logout
           </Button>

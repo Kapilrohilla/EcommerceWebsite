@@ -1,18 +1,25 @@
 import { MinusIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Button, Typography } from "@material-tailwind/react";
+import { useDispatch, useSelector, UseDispatch } from "react-redux";
+import { add2cart, updateCart } from "../redux/cart";
+import store from "../redux/store";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
+  const cart = useSelector((state: any) => state.cart);
   return (
     <>
       <div className="m-4 lg:m-16 ">
         <h1 className="font text-3xl" style={{ fontWeight: "500" }}>
-          Checkout
+          Cart
         </h1>
-        <div className="flex flex-col lg:flex-row my-5 lg:my-10 ">
-          <div className="w-full lg:w-2/3">
-            <TableWithStripedColumns />
+        <div className="flex flex-col lg:flex-row my-5 lg:my-10 lg:gap-3">
+          <div className="w-full xl:w-2/3">
+            <TableWithStripedColumns cartItems={cart} />
           </div>
-          <div className="w-1/3">
-            <SubTotal />
+          <div className="w-full xl:w-1/3">
+            <SubTotal cartItems={cart} />
           </div>
         </div>
       </div>
@@ -22,14 +29,47 @@ const Checkout = () => {
 
 export default Checkout;
 
-import { Button, Typography } from "@material-tailwind/react";
-import { Outlet } from "react-router-dom";
-
-const TABLE_HEAD = ["Product", "Price", "Qualit", "SubTotal", "Action"];
+const TABLE_HEAD = ["Product", "Price", "Quantity"];
 
 const TABLE_ROWS = [1, 2, 3, 4, 5];
 
-export function TableWithStripedColumns() {
+export function TableWithStripedColumns({ cartItems }: { cartItems: any }) {
+  const dispatch = useDispatch();
+  //@ts-ignore
+  const token = store.getState().user?.token;
+
+  const incrementItem = (cartItem: any) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
+    console.log(cartItem);
+    // return console.log(cartItem?.product?._id);
+    var raw = JSON.stringify({
+      productId: cartItem?.product?._id,
+    });
+
+    // console.log(raw);
+    // var requestOptions = {
+    //   method: "POST",
+    //   headers: myHeaders,
+    //   body: raw,
+    //   redirect: "follow",
+    // };
+
+    // @ts-ignore
+    // fetch(`${import.meta.env.VITE_BASEURL}/cart/add`, requestOptions)
+    //   .then((response) => response.json())
+    //   .then((result: any) => {
+    //     if (result?.valid) {
+    //       console.log(result?.message);
+    // @ts-ignore
+    dispatch(updateCart(cartItem.product));
+    //   } else {
+    //     alert(result?.message);
+    //   }
+    // })
+    // .catch((error) => console.log("error", error));
+  };
   return (
     <div className="h-full w-full">
       <table className="w-full min-w-max table-auto text-left">
@@ -49,65 +89,49 @@ export function TableWithStripedColumns() {
           </tr>
         </thead>
         <tbody>
-          {TABLE_ROWS.map(({ name, job, date }, index) => {
+          {cartItems.map((cartItem: any, index: number) => {
             const isLast = index === TABLE_ROWS.length - 1;
             const classes = isLast ? "p-4" : "p-4 ";
 
             return (
-              <tr key={name}>
+              <tr key={cartItem?._id}>
                 <td className={classes}>
                   <div className="flex flex-row items-center gap-2">
                     <img
-                      src="https://th.bing.com/th?id=OPA.ti3GipJINrpVMA474C474&w=220&h=210&c=17&o=5&pid=21.1"
+                      src={cartItem?.product?.image}
                       alt="dress"
-                      className="h-10  w-10 rounded-full"
+                      className="h-10 w-10 rounded-full object-contain"
                     />
                     <div>
-                      <h4 className="font-semibold text-lg">
-                        Girls Pink Moona
+                      <h4 className="font-semibold text-lg text-ellipsis overflow-hidden max-w-36 lg:max-w-96 whitespace-nowrap">
+                        {cartItem?.product?.name}
                       </h4>
-                      <p className="text-sm opacity-70">Size: {"S"}</p>
+                      {/* <p className="text-sm opacity-70">Size: {"S"}</p> */}
                     </div>
                   </div>
                 </td>
                 <td className={`${classes}`}>
-                  <p className="font-light">${80.0}</p>
+                  <p className="font-light">
+                    ₹{Number(cartItem?.product?.price).toLocaleString("en-US")}
+                  </p>
                 </td>
                 <td className="w-fit">
                   <div className="flex items-center gap-4 border border-black p-2 rounded-lg w-fit">
                     <button
                       type="button"
-                      class="flex items-center justify-center  ransition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none p-2 rounded-md"
+                      className="flex items-center justify-center  ransition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none p-2 rounded-md"
                     >
                       <MinusIcon color="#000" className="h-6 w-6" />
                     </button>
-                    {5}
+                    {cartItem?.quantity}
                     <button
+                      onClick={() => incrementItem(cartItem)}
                       type="button"
-                      class="flex items-center justify-center  ransition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none p-2 rounded-md"
+                      className="flex items-center justify-center  ransition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none p-2 rounded-md"
                     >
                       <PlusIcon color="#000" className="h-6 w-6" />
                     </button>
                   </div>
-                </td>
-                <td className={`${classes}`}>
-                  <Typography
-                    as="a"
-                    href="#"
-                    variant="small"
-                    color="blue-gray"
-                    className="font-medium"
-                  >
-                    ${80.0}
-                  </Typography>
-                </td>
-                <td className={`${classes}`}>
-                  <button
-                    class="flex  h-6 max-h-[40px] w-6 max-w-[40px] items-center justify-center  select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button"
-                  >
-                    <TrashIcon className="h-4 w-4" color="#f00" />
-                  </button>
                 </td>
               </tr>
             );
@@ -118,26 +142,37 @@ export function TableWithStripedColumns() {
   );
 }
 
-export function SubTotal() {
+export function SubTotal({ cartItems }: { cartItems: any }) {
+  const subTotal = useMemo(
+    () =>
+      cartItems.reduce((acc: number, current: any) => {
+        return acc + Number(current?.product?.price);
+      }, 0),
+    []
+  );
+
+  const navigate = useNavigate();
   return (
     <div className="border rounded-md border-gray-300 p-8 ">
       <div>
         <div className="flex justify-between items-center pb-3 border-b border-gray-300">
           <h2 className="font-bold text-lg">Subtotal</h2>
-          <p>$200</p>
+          <p>₹{Number(subTotal).toLocaleString("en-US")}</p>
         </div>
         <div className="py-3">
           <div className="flex flex-row justify-between py-2 border-b border-gray-300">
             <p className="text-sm">Delivery Charge</p>
-            <span className="text-sm">$5.00</span>
+            <span className="text-sm">₹{80}</span>
           </div>
           <div className="pt-4 flex flex-row justify-between items-center">
             <p className="text-base font-bold">Grand Total </p>
-            <span>${205}</span>
+            <span>₹{(Number(subTotal) + 80).toLocaleString("en-US")}</span>
           </div>
         </div>
       </div>
-      <Button className="w-full mt-5">Proceed to Checkout</Button>
+      <Button onClick={() => navigate("/address")} className="w-full mt-5">
+        Proceed to Checkout
+      </Button>
     </div>
   );
 }
