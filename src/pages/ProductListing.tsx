@@ -1,17 +1,37 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { Button, IconButton } from "@material-tailwind/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 const ProductListing = () => {
+  const location = useLocation();
+  const categoryThroughParams: string = location.state?.category;
   const [products, setProducts] = useState<object[]>([]);
-  const [category, setCategory] = useState<String>("");
+  const selectedCategoryInitialState = [];
+  if (categoryThroughParams) {
+    selectedCategoryInitialState.push(categoryThroughParams);
+  }
+  const [selectedCategory, setSelectedCategory] = useState<string[]>(
+    selectedCategoryInitialState
+  );
+  const [selectedBrands, setSelectedBrands] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+    let url = import.meta.env.VITE_BASEURL + "/product?";
+    if (selectedCategory.length > 0) {
+      const beforeContactCategory = selectedCategory.map((category) => {
+        return "category=" + category;
+      });
+      url += beforeContactCategory.join("&");
+    }
+    if (selectedBrands) {
+      url += "brand=" + selectedBrands;
+    }
 
-    fetch(import.meta.env.VITE_BASEURL + "/product", {
+    console.log(url);
+    fetch(url, {
       method: "GET",
       signal,
     })
@@ -27,7 +47,7 @@ const ProductListing = () => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [selectedBrands, selectedCategory]);
 
   return (
     <div>
@@ -38,7 +58,12 @@ const ProductListing = () => {
         <div className="flex gap-5">
           <div className="hidden md:flex ">
             <div>
-              <AccordionCustomIcon />
+              <AccordionCustomIcon
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                selectedBrand={selectedBrands}
+                setSelectedBrands={setSelectedBrands}
+              />
             </div>
           </div>
           <div>
@@ -127,8 +152,8 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
-import { useDispatch } from "react-redux";
-import { populateCategory } from "../redux/category";
+import { useLocation, useParams } from "react-router-dom";
+import category from "../redux/category";
 
 function Icon({ id, open }) {
   return (
@@ -151,12 +176,22 @@ function Icon({ id, open }) {
   );
 }
 
-export function AccordionCustomIcon() {
+export function AccordionCustomIcon({
+  selectedCategory,
+  selectedBrand,
+  setSelectedCategory,
+  setSelectedBrands,
+}: {
+  selectedCategory: string[];
+  selectedBrand: string | null;
+  setSelectedCategory: React.Dispatch<string[]>;
+  setSelectedBrands: React.Dispatch<string | null>;
+}) {
   const [open, setOpen] = useState(0);
-  const [brands, setBrands] = useState<Array<String>>([]);
-  const [category, setCategory] = useState<String[]>([]);
+  const [brands, setBrands] = useState<Array<string>>([]);
+  const [category, setCategory] = useState<string[]>([]);
+
   const handleOpen = (value: any) => setOpen(open === value ? 0 : value);
-  const dispatch = useDispatch();
 
   // effect for category
   useEffect(() => {
@@ -208,11 +243,25 @@ export function AccordionCustomIcon() {
         <AccordionHeader onClick={() => handleOpen(1)}>Brand</AccordionHeader>
         <AccordionBody>
           {/* <form> */}
-          {brands.map((category) => {
+          {brands.map((brand) => {
+            const isSelected = brand === selectedBrand;
+            const handleChagneSelectedBrands = () => {
+              if (isSelected) {
+                setSelectedBrands(null);
+              } else {
+                setSelectedBrands(brand);
+              }
+            };
             return (
               <div>
-                <input type="checkbox" name={category} id={category} />
-                &nbsp; <label htmlFor={category}>{category}</label>
+                <input
+                  type="radio"
+                  name={brand}
+                  id={brand}
+                  onChange={handleChagneSelectedBrands}
+                  checked={isSelected}
+                />
+                &nbsp; <label htmlFor={brand}>{brand}</label>
               </div>
             );
           })}
@@ -235,9 +284,35 @@ export function AccordionCustomIcon() {
         </AccordionHeader>
         <AccordionBody>
           {category.map((category) => {
+            const isSelected = (() => {
+              let isFound = false;
+              selectedCategory.forEach((selected) => {
+                if (selected === category) {
+                  isFound = true;
+                  return;
+                }
+              });
+              return isFound;
+            })();
+
+            const handleChangeSelectedCategoryChange = () => {
+              if (isSelected) {
+                setSelectedCategory(
+                  selectedCategory.filter((selected) => selected !== category)
+                );
+              } else {
+                setSelectedCategory(selectedCategory.concat(category));
+              }
+            };
             return (
               <div>
-                <input type="checkbox" name={category} id={category} />
+                <input
+                  type="checkbox"
+                  name={category}
+                  id={category}
+                  onChange={handleChangeSelectedCategoryChange}
+                  checked={isSelected}
+                />
                 &nbsp; <label htmlFor={category}>{category}</label>
               </div>
             );
