@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { Provider, useDispatch } from "react-redux";
 import store from "./redux/store";
 import { populateUser } from "./redux/userSlice";
+import { populateCart } from "./redux/cart";
 
 const Layout = () => {
   return (
@@ -24,15 +25,17 @@ const Layout = () => {
 
 const App = () => {
   // const [user, setUser] = useState<object | null>(null);
-  const user = store.getState().user;
+  // const user = store.getState().user;
   const [login, setLogin] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user: any = localStorage.getItem("user");
     if (user) {
+      const userObj = JSON.parse(user);
       setLogin(true);
-      dispatch(populateUser(JSON.parse(user)));
+      dispatch(populateUser(userObj));
+      dispatch(populateCart(userObj.user.cart));
     }
   }, []);
   const router = createBrowserRouter([

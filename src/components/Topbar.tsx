@@ -11,6 +11,7 @@ import {
   MenuList,
   MenuItem,
   Button,
+  Badge,
 } from "@material-tailwind/react";
 import {
   ChevronDownIcon,
@@ -27,6 +28,7 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import store from "../redux/store";
 
 const navListMenuItems = [
   {
@@ -49,41 +51,6 @@ const navListMenuItems = [
     description: "Find each popular books for your need.",
     icon: BookOpenIcon,
   },
-  // {
-  //   title: "Blog",
-  //   description: "Find the perfect solution for your needs.",
-  //   icon: Bars4Icon,
-  // },
-  // {
-  //   title: "Services",
-  //   description: "Learn how we can help you achieve your goals.",
-  //   icon: SunIcon,
-  // },
-  // {
-  //   title: "Support",
-  //   description: "Reach out to us for assistance or inquiries",
-  //   icon: GlobeAmericasIcon,
-  // },
-  // {
-  //   title: "Contact",
-  //   description: "Find the perfect solution for your needs.",
-  //   icon: PhoneIcon,
-  // },
-  // {
-  //   title: "News",
-  //   description: "Read insightful articles, tips, and expert opinions.",
-  //   icon: NewspaperIcon,
-  // },
-  // {
-  //   title: "Products",
-  //   description: "Find the perfect solution for your needs.",
-  //   icon: RectangleGroupIcon,
-  // },
-  // {
-  //   title: "Special Offers",
-  //   description: "Explore limited-time deals and bundles",
-  //   icon: TagIcon,
-  // },
 ];
 
 function NavListMenu() {
@@ -208,6 +175,8 @@ export function Topbar() {
     localStorage.clear();
     window.location.reload();
   };
+  const cartLength = store.getState().cart.length;
+
   return (
     <Navbar placeholder={"something"} className=" w-full px-4 py-2 max-w-full">
       <div className="flex items-center justify-between text-blue-gray-900">
@@ -228,9 +197,11 @@ export function Topbar() {
           <IconButton variant="text">
             <HeartIcon className="h-6" />
           </IconButton>
-          <IconButton variant="text">
-            <ShoppingBagIcon className="h-6" />
-          </IconButton>
+          <Badge content={cartLength}>
+            <IconButton variant="text">
+              <ShoppingBagIcon className="h-6" />
+            </IconButton>
+          </Badge>
           <Button className=" hidden lg:inline-block" onClick={handleLogout}>
             Logout
           </Button>
