@@ -96,6 +96,7 @@ const Home = () => {
                   price={product?.price}
                   discountedPrice={product?.price}
                   image={product?.image}
+                  productObject={product}
                 />
               );
             })}

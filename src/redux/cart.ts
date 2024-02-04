@@ -7,8 +7,12 @@ const cartSlice = createSlice({
     populateCart: function (_state, action) {
       return action.payload;
     },
+    // @ts-ignore
+    add2cart: function (state, action) {
+      return [...state, { product: action.payload, quantity: 1 }];
+    },
   },
 });
 
-export const { populateCart } = cartSlice.actions;
+export const { populateCart, add2cart } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -76,14 +76,8 @@ const ProductListing = () => {
                   price={product?.price}
                   discountedPrice={product?.price}
                   image={product?.image}
+                  productObject={product}
                 />
-                // <ProductCard
-                //   title="Shopping bag"
-                //   shortDescription="Women Textured Handheld bag"
-                //   price={80.8}
-                //   discountedPrice={60.6}
-                //   image="https://th.bing.com/th/id/OIP.eNGbDNNEA5PEVXvh4eON_QHaHa?rs=1&pid=ImgDetMain"
-                // />
               ))}
             </div>
           </div>

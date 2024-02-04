@@ -28,8 +28,7 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import store from "../redux/store";
-
+import { useSelector } from "react-redux";
 const navListMenuItems = [
   {
     title: "Electronics",
@@ -175,10 +174,14 @@ export function Topbar() {
     localStorage.clear();
     window.location.reload();
   };
-  const cartLength = store.getState().cart.length;
+  // const cartLength = store.getState().cart.length;
+  const cartLength = useSelector((state: any) => state?.cart).length;
 
   return (
-    <Navbar placeholder={"something"} className=" w-full px-4 py-2 max-w-full">
+    <Navbar
+      placeholder={"something"}
+      className="fixed z-50 w-full px-4 py-2 max-w-full"
+    >
       <div className="flex items-center justify-between text-blue-gray-900">
         <img
           src="/images/logo.png"
