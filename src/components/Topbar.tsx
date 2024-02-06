@@ -141,7 +141,11 @@ function NavList() {
         color="blue-gray"
         className="font-medium"
       >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">Home</ListItem>
+        <Link to="/">
+          <ListItem className="flex items-center gap-2 py-2 pr-4">
+            Home
+          </ListItem>
+        </Link>
       </Typography>
       <NavListMenu />
       <Typography
@@ -207,6 +211,13 @@ export function Topbar() {
               </IconButton>
             </Badge>
           </Link>
+          <Button
+            variant={"text"}
+            className=" hidden lg:inline-block"
+            onClick={() => navigation("/orders")}
+          >
+            Orders
+          </Button>
           <Button className=" hidden lg:inline-block" onClick={handleLogout}>
             Logout
           </Button>
@@ -227,7 +238,11 @@ export function Topbar() {
       <Collapse open={openNav}>
         <NavList />
         {/* <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0  lg:flex-row lg:p-1 hidden lg:flex justify-end"> */}
+        <div className="flex flex-row "></div>
         <div className="flex flex-row gap-5">
+          <Button variant="text" onClick={() => navigation("/orders")}>
+            Orders
+          </Button>
           <Button onClick={handleLogout}>Logout</Button>
         </div>
         {/* </List> */}

@@ -1,4 +1,16 @@
 const Address = () => {
+  //@ts-ignore
+  //   const user = store.getState().user?.user;
+  const cartItems = useSelector((state: any) => state.cart);
+
+  const subTotal = useMemo(
+    () =>
+      cartItems.reduce((acc: number, current: any) => {
+        return acc + Number(current?.product?.price);
+      }, 0),
+    []
+  );
+
   return (
     <>
       <div className="m-4 lg:m-16 ">
@@ -11,7 +23,7 @@ const Address = () => {
             <SimpleRegistrationForm />
           </div>
           <div className="w-full lg:w-1/3">
-            <SubTotal />
+            <SubTotal subTotal={subTotal} />
           </div>
         </div>
       </div>
@@ -24,8 +36,27 @@ export default Address;
 import { Button } from "@material-tailwind/react";
 
 import { Card, Input, Typography } from "@material-tailwind/react";
+import { useSelector } from "react-redux";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function SimpleRegistrationForm() {
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [pinCode, setPinCode] = useState(0);
+
+  const navigate = useNavigate();
+  function handleSubmit(e: Event) {
+    e.preventDefault();
+    navigate("/orders/");
+    setName("");
+    setMobile("");
+    setAddress("");
+    setCity("");
+    setPinCode(0);
+  }
   return (
     <Card color="transparent" shadow={false} className="w-full">
       <Typography variant="h4" color="blue-gray">
@@ -35,18 +66,21 @@ export function SimpleRegistrationForm() {
         {/* Nice to meet you! Enter your details to register. */}
         Enter your delivery Address
       </Typography>
-      <form className="mt-8 mb-2 w-full max-w-[500]">
+      <form className="mt-8 mb-2 w-full max-w-[500]" onSubmit={handleSubmit}>
         <div className="mb-1 flex flex-col gap-6 w-full lg:max-w-[500]">
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Your Name
           </Typography>
           <Input
             size="lg"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="name"
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
-              className: "before:content-none after:content-none",
+              className: "be;fore:content-none after:content-none",
             }}
+            required={true}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Mobile number
@@ -54,24 +88,29 @@ export function SimpleRegistrationForm() {
 
           <Input
             size="lg"
-            placeholder="82828282828"
+            placeholder="8287842425"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            required={true}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             Flat, House, Building, Apartment
           </Typography>
           <Input
-            // type="password"
             type="text"
             size="lg"
-            // placeholder="********"
+            placeholder="********"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
+            required={true}
           />
           <Typography variant="h6" color="blue-gray" className="-mb-3">
             City
@@ -79,7 +118,10 @@ export function SimpleRegistrationForm() {
           <Input
             // type="password"
             type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
             size="lg"
+            required={true}
             // placeholder="********"
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
@@ -92,35 +134,40 @@ export function SimpleRegistrationForm() {
           <Input
             type="number"
             size="lg"
+            value={pinCode}
+            min="0"
+            required={true}
+            onChange={(e) => setPinCode(Number(e.target.value))}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
           />
         </div>
-
-        <Button className="mt-6 ">Deliver Here</Button>
+        <Button type={"submit"} className="mt-6 ">
+          Deliver Here
+        </Button>
       </form>
     </Card>
   );
 }
 
-export function SubTotal() {
+export function SubTotal({ subTotal }: { subTotal: number }) {
   return (
     <div className="border rounded-md border-gray-300 p-8 ">
       <div>
         <div className="flex justify-between items-center pb-3 border-b border-gray-300">
           <h2 className="font-bold text-lg">Subtotal</h2>
-          <p>$200</p>
+          <p>₹{subTotal.toLocaleString("en-US")}</p>
         </div>
         <div className="py-3">
           <div className="flex flex-row justify-between py-2 border-b border-gray-300">
             <p className="text-sm">Delivery Charge</p>
-            <span className="text-sm">$5.00</span>
+            <span className="text-sm">₹{80}</span>
           </div>
           <div className="pt-4 flex flex-row justify-between items-center">
             <p className="text-base font-bold">Grand Total </p>
-            <span>${205}</span>
+            <span>₹{(subTotal + 80).toLocaleString("en-US")}</span>
           </div>
         </div>
       </div>

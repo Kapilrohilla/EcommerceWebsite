@@ -12,6 +12,8 @@ import { Provider, useDispatch } from "react-redux";
 import store from "./redux/store";
 import { populateUser } from "./redux/userSlice";
 import { populateCart } from "./redux/cart";
+import Orders from "./pages/Orders";
+import SpecificOrder from "./pages/SpecificOrder";
 
 const Layout = () => {
   return (
@@ -24,8 +26,6 @@ const Layout = () => {
 };
 
 const App = () => {
-  // const [user, setUser] = useState<object | null>(null);
-  // const user = store.getState().user;
   const [login, setLogin] = useState(false);
 
   const dispatch = useDispatch();
@@ -35,6 +35,7 @@ const App = () => {
       const userObj = JSON.parse(user);
       setLogin(true);
       dispatch(populateUser(userObj));
+      //@ts-ignore
       dispatch(populateCart(userObj.user.cart));
     }
   }, []);
@@ -62,6 +63,14 @@ const App = () => {
         {
           path: "products",
           element: <ProductListing />,
+        },
+        {
+          path: "orders",
+          element: <Orders />,
+        },
+        {
+          path: "orders/:id",
+          element: <SpecificOrder />,
         },
       ],
     },
