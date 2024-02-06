@@ -1,16 +1,5 @@
 const Address = () => {
-  //@ts-ignore
-  //   const user = store.getState().user?.user;
-  const cartItems = useSelector((state: any) => state.cart);
-
-  const subTotal = useMemo(
-    () =>
-      cartItems.reduce((acc: number, current: any) => {
-        return acc + Number(current?.product?.price);
-      }, 0),
-    []
-  );
-
+  const subTotal = 100;
   return (
     <>
       <div className="m-4 lg:m-16 ">

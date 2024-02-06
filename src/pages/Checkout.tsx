@@ -1,13 +1,16 @@
 import { MinusIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button, Typography } from "@material-tailwind/react";
 import { useDispatch, useSelector, UseDispatch } from "react-redux";
-import { add2cart, updateCart } from "../redux/cart";
+// import { add2cart, updateCart} from "../redux/cart";
+import { incrementCartProduct, decrementCartProduct } from "../redux/userSlice";
+
 import store from "../redux/store";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
-  const cart = useSelector((state: any) => state.cart);
+  //@ts-ignore
+  const cart = useSelector((state) => state.user).user.cart;
   return (
     <>
       <div className="m-4 lg:m-16 ">
@@ -35,40 +38,69 @@ const TABLE_ROWS = [1, 2, 3, 4, 5];
 
 export function TableWithStripedColumns({ cartItems }: { cartItems: any }) {
   const dispatch = useDispatch();
+  console.log(cartItems);
   //@ts-ignore
   const token = store.getState().user?.token;
 
-  const incrementItem = (cartItem: any) => {
+  const incrementItem = (cartItem: string) => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
     myHeaders.append("Content-Type", "application/json");
-    console.log(cartItem);
-    // return console.log(cartItem?.product?._id);
+
     var raw = JSON.stringify({
-      productId: cartItem?.product?._id,
+      productId: cartItem,
     });
 
     // console.log(raw);
-    // var requestOptions = {
-    //   method: "POST",
-    //   headers: myHeaders,
-    //   body: raw,
-    //   redirect: "follow",
-    // };
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
 
     // @ts-ignore
-    // fetch(`${import.meta.env.VITE_BASEURL}/cart/add`, requestOptions)
-    //   .then((response) => response.json())
-    //   .then((result: any) => {
-    //     if (result?.valid) {
-    //       console.log(result?.message);
-    // @ts-ignore
-    dispatch(updateCart(cartItem.product));
-    //   } else {
-    //     alert(result?.message);
-    //   }
-    // })
-    // .catch((error) => console.log("error", error));
+    fetch(`${import.meta.env.VITE_BASEURL}/cart/add`, requestOptions)
+      .then((response) => response.json())
+      .then((result: any) => {
+        if (result?.valid) {
+          console.log(result?.message);
+          // @ts-ignore
+          dispatch(incrementCartProduct(cartItem));
+        } else {
+          alert(result?.message);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
+  const decrementItem = (cartItem: string) => {
+    //@ts-ignore
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({ productId: cartItem });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    //@ts-ignore
+    fetch(`${import.meta.env.VITE_BASEURL}/cart/remove`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result?.valid) {
+          //@ts-ignore
+          dispatch(decrementCartProduct(cartItem));
+        } else {
+          alert(result?.message);
+        }
+      })
+      .catch((error) => console.log("error", error));
   };
   return (
     <div className="h-full w-full">
@@ -112,7 +144,10 @@ export function TableWithStripedColumns({ cartItems }: { cartItems: any }) {
                 </td>
                 <td className={`${classes}`}>
                   <p className="font-light">
-                    ₹{Number(cartItem?.product?.price).toLocaleString("en-US")}
+                    {/* ₹{Number(cartItem?.product?.price).toLocaleString("en-US")} */}
+                    ₹
+                    {Number(cartItem?.product?.price) *
+                      Number(cartItem?.quantity)}
                   </p>
                 </td>
                 <td className="w-fit">
@@ -120,12 +155,16 @@ export function TableWithStripedColumns({ cartItems }: { cartItems: any }) {
                     <button
                       type="button"
                       className="flex items-center justify-center  ransition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none p-2 rounded-md"
+                      onClick={() => {
+                        //console.log(cartItem?.product?._id);
+                        decrementItem(cartItem?.product?._id);
+                      }}
                     >
                       <MinusIcon color="#000" className="h-6 w-6" />
                     </button>
                     {cartItem?.quantity}
                     <button
-                      onClick={() => incrementItem(cartItem)}
+                      onClick={() => incrementItem(cartItem?.product?._id)}
                       type="button"
                       className="flex items-center justify-center  ransition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none p-2 rounded-md"
                     >
@@ -146,9 +185,11 @@ export function SubTotal({ cartItems }: { cartItems: any }) {
   const subTotal = useMemo(
     () =>
       cartItems.reduce((acc: number, current: any) => {
-        return acc + Number(current?.product?.price);
+        return (
+          acc + Number(current?.product?.price) * Number(current?.quantity)
+        );
       }, 0),
-    []
+    [cartItems]
   );
 
   const navigate = useNavigate();

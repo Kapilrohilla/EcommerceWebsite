@@ -1,7 +1,8 @@
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
-import { add2cart } from "../redux/cart";
+
 import store from "../redux/store";
+import { add2cart } from "../redux/userSlice";
 
 type ProductCardType = {
   image: string;
@@ -24,7 +25,13 @@ ProductCardType) => {
   const token = store.getState().user?.token;
 
   const dispatch = useDispatch();
-  const cart = useSelector((state: any) => state.cart);
+  // const cart = useSelector((state: any) => state.cart);
+  //@ts-ignore
+  // const cart = store.getState().user?.user.cart;
+  const user = useSelector((state) => state.user);
+  const cart = user.user.cart;
+  console.log(cart);
+
   const isInCart =
     cart.filter((productInCart: any) => {
       return productInCart.product?._id === productObject?._id;

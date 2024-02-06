@@ -14,6 +14,7 @@ import { populateUser } from "./redux/userSlice";
 import { populateCart } from "./redux/cart";
 import Orders from "./pages/Orders";
 import SpecificOrder from "./pages/SpecificOrder";
+import Auth from "./pages/Auth";
 
 const Layout = () => {
   return (
@@ -36,7 +37,7 @@ const App = () => {
       setLogin(true);
       dispatch(populateUser(userObj));
       //@ts-ignore
-      dispatch(populateCart(userObj.user.cart));
+      // dispatch(populateCart(userObj.user.cart));
     }
   }, []);
   const router = createBrowserRouter([

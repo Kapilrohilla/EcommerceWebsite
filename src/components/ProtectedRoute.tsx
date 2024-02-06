@@ -1,9 +1,11 @@
 import Auth from "../pages/Auth";
 
 const ProtectedRoute = ({ isLoggedin, children }: ProtectedRouteProps) => {
+  // const navigaiton = useNavigate();
   if (isLoggedin) {
     return children;
   } else {
+    // navigaiton("/auth");
     return <Auth />;
   }
 };

@@ -179,7 +179,8 @@ export function Topbar() {
     window.location.reload();
   };
   // const cartLength = store.getState().cart.length;
-  const cartLength = useSelector((state: any) => state?.cart).length;
+  // const cartLength = useSelector((state: any) => state?.cart).length;
+  const cartLength = useSelector((state) => state.user).user.cart?.length;
 
   return (
     <Navbar
