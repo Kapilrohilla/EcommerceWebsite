@@ -66,6 +66,12 @@ const userSlice = createSlice({
       localStorage.setItem("user", JSON.stringify(state));
       return state;
     },
+    clearCart: function (state, _action) {
+      if (state !== null) {
+        //@ts-ignore
+        state.user.cart = [];
+      }
+    },
   },
 });
 
@@ -75,5 +81,6 @@ export const {
   add2cart,
   incrementCartProduct,
   decrementCartProduct,
+  clearCart,
 } = userSlice.actions;
 export default userSlice.reducer;

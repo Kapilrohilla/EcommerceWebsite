@@ -1,5 +1,15 @@
+import { Button } from "@material-tailwind/react";
+
+import { Card, Input, Typography } from "@material-tailwind/react";
+import { useDispatch, useSelector } from "react-redux";
+import { useMemo, useState } from "react";
+import store from "../redux/store";
+import { useNavigate } from "react-router-dom";
+import { clearCart } from "../redux/userSlice";
+
 const Address = () => {
   const cartItems = useSelector((state: any) => state.user).user.cart;
+  const [disabledInput, setDisabledInput] = useState(false);
   const subTotal = useMemo(
     () =>
       cartItems.reduce((acc: number, current: any) => {
@@ -18,10 +28,13 @@ const Address = () => {
         </h1>
         <div className="flex flex-col lg:flex-row my-5 lg:my-10 gap-5">
           <div className="w-full lg:w-2/3">
-            <SimpleRegistrationForm />
+            <SimpleRegistrationForm
+              disabledInput={disabledInput}
+              setDiabledInput={setDisabledInput}
+            />
           </div>
           <div className="w-full lg:w-1/3">
-            <SubTotal subTotal={subTotal} />
+            <SubTotal subTotal={subTotal} shouldPlaceOrder={disabledInput} />
           </div>
         </div>
       </div>
@@ -31,22 +44,20 @@ const Address = () => {
 
 export default Address;
 
-import { Button } from "@material-tailwind/react";
-
-import { Card, Input, Typography } from "@material-tailwind/react";
-import { useSelector } from "react-redux";
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import store from "../redux/store";
-
-export function SimpleRegistrationForm() {
+export function SimpleRegistrationForm({
+  disabledInput,
+  setDiabledInput,
+}: {
+  disabledInput: boolean;
+  setDiabledInput: React.Dispatch<boolean>;
+}) {
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [pinCode, setPinCode] = useState(0);
+  // const navigate = useNavigate();
 
-  const navigate = useNavigate();
   function handleSubmit(e: Event) {
     e.preventDefault();
     //@ts-ignore
@@ -68,17 +79,14 @@ export function SimpleRegistrationForm() {
     };
     //@ts-ignore
     fetch(`${import.meta.env.VITE_BASEURL}/cart/address`, requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => {
         //@ts-ignore
         if (result?.valid) {
-          console.log(result);
-          navigate("/orders/");
-          setName("");
-          setMobile("");
-          setAddress("");
-          setCity("");
-          setPinCode(0);
+          setDiabledInput(true);
+          alert("address saved successfully");
+        } else {
+          alert("something went wrong");
         }
       })
       .catch((error) => console.log("error", error));
@@ -100,7 +108,11 @@ export function SimpleRegistrationForm() {
           <Input
             size="lg"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              if (!disabledInput) {
+                setName(e.target.value);
+              }
+            }}
             placeholder="name"
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
@@ -116,7 +128,11 @@ export function SimpleRegistrationForm() {
             size="lg"
             placeholder="8287842425"
             value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
+            onChange={(e) => {
+              if (!disabledInput) {
+                setMobile(e.target.value);
+              }
+            }}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
@@ -131,7 +147,11 @@ export function SimpleRegistrationForm() {
             size="lg"
             placeholder="********"
             value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            onChange={(e) => {
+              if (!disabledInput) {
+                setAddress(e.target.value);
+              }
+            }}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
@@ -145,7 +165,11 @@ export function SimpleRegistrationForm() {
             // type="password"
             type="text"
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              if (!disabledInput) {
+                setCity(e.target.value);
+              }
+            }}
             size="lg"
             required={true}
             // placeholder="********"
@@ -163,14 +187,23 @@ export function SimpleRegistrationForm() {
             value={pinCode}
             min="0"
             required={true}
-            onChange={(e) => setPinCode(Number(e.target.value))}
+            onChange={(e) => {
+              if (!disabledInput) {
+                setPinCode(Number(e.target.value));
+              }
+            }}
             className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
             labelProps={{
               className: "before:content-none after:content-none",
             }}
           />
         </div>
-        <Button type={"submit"} className="mt-6 ">
+        <Button
+          type={"submit"}
+          // style={{ backgroundColor: "#808080" }}
+          disabled={disabledInput}
+          className="mt-6 "
+        >
           Deliver Here
         </Button>
       </form>
@@ -178,7 +211,38 @@ export function SimpleRegistrationForm() {
   );
 }
 
-export function SubTotal({ subTotal }: { subTotal: number }) {
+export function SubTotal({
+  subTotal,
+  shouldPlaceOrder,
+}: {
+  subTotal: number;
+  shouldPlaceOrder: boolean;
+}) {
+  //@ts-ignore
+  const token = store.getState().user?.token;
+  const navigation = useNavigate();
+  const dispatch = useDispatch();
+
+  function handlePlaceOrder() {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    //@ts-ignore
+    fetch(`${import.meta.env.VITE_BASEURL}/order`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        alert("Order successfully created");
+        //@ts-ignore
+        dispatch(clearCart());
+        navigation("/orders");
+      })
+      .catch((error) => console.log("error", error));
+  }
   return (
     <div className="border rounded-md border-gray-300 p-8 ">
       <div>
@@ -189,15 +253,19 @@ export function SubTotal({ subTotal }: { subTotal: number }) {
         <div className="py-3">
           <div className="flex flex-row justify-between py-2 border-b border-gray-300">
             <p className="text-sm">Delivery Charge</p>
-            <span className="text-sm">₹{80}</span>
+            <span className="text-sm">₹{"00"}</span>
           </div>
           <div className="pt-4 flex flex-row justify-between items-center">
             <p className="text-base font-bold">Grand Total </p>
-            <span>₹{(subTotal + 80).toLocaleString("en-US")}</span>
+            <span>₹{subTotal.toLocaleString("en-US")}</span>
           </div>
         </div>
       </div>
-      {/* <Button className="w-full mt-5">Proceed to Checkout</Button> */}
+      {shouldPlaceOrder && (
+        <Button onClick={handlePlaceOrder} className="w-full mt-5">
+          Place Order
+        </Button>
+      )}
     </div>
   );
 }

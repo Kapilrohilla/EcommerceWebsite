@@ -55,35 +55,46 @@ const navListMenuItems = [
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const navigation = useNavigate();
   const renderItems = navListMenuItems.map(
-    ({ icon, title, description }, key) => (
-      <a href="#" key={key}>
-        <MenuItem className="flex items-center gap-3 rounded-lg">
-          <div className="flex items-center justify-center rounded-lg !bg-blue-gray-50 p-2 ">
-            {" "}
-            {React.createElement(icon, {
-              strokeWidth: 2,
-              className: "h-6 text-gray-900 w-6",
-            })}
-          </div>
-          <div>
-            <Typography
-              variant="h6"
-              color="blue-gray"
-              className="flex items-center text-sm font-bold"
-            >
-              {title}
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="text-xs !font-medium text-blue-gray-500"
-            >
-              {description}
-            </Typography>
-          </div>
-        </MenuItem>
-      </a>
-    )
+    ({ icon, title, description }, key) => {
+      return (
+        <Link to="/products" state={{ category: title }}>
+          <MenuItem
+            className="flex items-center gap-3 rounded-lg"
+            // onClick={() =>
+            //   navigation("/products", {
+            //     // @ts-ignore
+            //     category: title,
+            //   })
+            // }
+          >
+            <div className="flex items-center justify-center rounded-lg !bg-blue-gray-50 p-2 ">
+              {" "}
+              {React.createElement(icon, {
+                strokeWidth: 2,
+                className: "h-6 text-gray-900 w-6",
+              })}
+            </div>
+            <div>
+              <Typography
+                variant="h6"
+                color="blue-gray"
+                className="flex items-center text-sm font-bold"
+              >
+                {title}
+              </Typography>
+              <Typography
+                variant="paragraph"
+                className="text-xs !font-medium text-blue-gray-500"
+              >
+                {description}
+              </Typography>
+            </div>
+          </MenuItem>
+        </Link>
+      );
+    }
   );
 
   return (
@@ -178,8 +189,7 @@ export function Topbar() {
     localStorage.clear();
     window.location.reload();
   };
-  // const cartLength = store.getState().cart.length;
-  // const cartLength = useSelector((state: any) => state?.cart).length;
+  //@ts-ignore
   const cartLength = useSelector((state) => state.user).user.cart?.length;
 
   return (

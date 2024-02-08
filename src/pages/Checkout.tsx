@@ -203,11 +203,11 @@ export function SubTotal({ cartItems }: { cartItems: any }) {
         <div className="py-3">
           <div className="flex flex-row justify-between py-2 border-b border-gray-300">
             <p className="text-sm">Delivery Charge</p>
-            <span className="text-sm">₹{80}</span>
+            <span className="text-sm">₹{"00"}</span>
           </div>
           <div className="pt-4 flex flex-row justify-between items-center">
             <p className="text-base font-bold">Grand Total </p>
-            <span>₹{(Number(subTotal) + 80).toLocaleString("en-US")}</span>
+            <span>₹{(Number(subTotal) + 0).toLocaleString("en-US")}</span>
           </div>
         </div>
       </div>

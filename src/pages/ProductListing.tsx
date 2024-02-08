@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { Button, IconButton } from "@material-tailwind/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
@@ -6,6 +6,8 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 const ProductListing = () => {
   const location = useLocation();
   const categoryThroughParams: string = location.state?.category;
+  console.log(location.state, "< category");
+
   const [products, setProducts] = useState<object[]>([]);
   const selectedCategoryInitialState = [];
   if (categoryThroughParams) {
@@ -146,8 +148,8 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
-import { useLocation, useParams } from "react-router-dom";
-import category from "../redux/category";
+import { useLocation } from "react-router-dom";
+// import category from "../redux/category";
 
 function Icon({ id, open }) {
   return (
