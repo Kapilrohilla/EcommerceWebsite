@@ -1,5 +1,15 @@
 const Address = () => {
-  const subTotal = 100;
+  const cartItems = useSelector((state: any) => state.user).user.cart;
+  const subTotal = useMemo(
+    () =>
+      cartItems.reduce((acc: number, current: any) => {
+        return (
+          acc + Number(current?.product?.price) * Number(current?.quantity)
+        );
+      }, 0),
+    [cartItems]
+  );
+
   return (
     <>
       <div className="m-4 lg:m-16 ">
@@ -8,7 +18,6 @@ const Address = () => {
         </h1>
         <div className="flex flex-col lg:flex-row my-5 lg:my-10 gap-5">
           <div className="w-full lg:w-2/3">
-            {/* <TableWithStripedColumns /> */}
             <SimpleRegistrationForm />
           </div>
           <div className="w-full lg:w-1/3">
@@ -28,6 +37,7 @@ import { Card, Input, Typography } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import store from "../redux/store";
 
 export function SimpleRegistrationForm() {
   const [name, setName] = useState("");
@@ -39,12 +49,39 @@ export function SimpleRegistrationForm() {
   const navigate = useNavigate();
   function handleSubmit(e: Event) {
     e.preventDefault();
-    navigate("/orders/");
-    setName("");
-    setMobile("");
-    setAddress("");
-    setCity("");
-    setPinCode(0);
+    //@ts-ignore
+    const token = store.getState().user?.token;
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      address: `${name}, ${address}, ${city}, ${pinCode}`,
+      mobile: mobile,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    //@ts-ignore
+    fetch(`${import.meta.env.VITE_BASEURL}/cart/address`, requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        //@ts-ignore
+        if (result?.valid) {
+          console.log(result);
+          navigate("/orders/");
+          setName("");
+          setMobile("");
+          setAddress("");
+          setCity("");
+          setPinCode(0);
+        }
+      })
+      .catch((error) => console.log("error", error));
   }
   return (
     <Card color="transparent" shadow={false} className="w-full">
