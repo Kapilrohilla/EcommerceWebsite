@@ -94,7 +94,7 @@ export default ProductListing;
 export function DefaultPagination() {
   const [active, setActive] = useState(1);
 
-  const getItemProps = (index) =>
+  const getItemProps = (index: any) =>
     ({
       variant: active === index ? "filled" : "text",
       color: "gray",

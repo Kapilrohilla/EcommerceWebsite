@@ -8,13 +8,11 @@ import { Footer } from "./components/Footer";
 import ProductListing from "./pages/ProductListing";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect, useState } from "react";
-import { Provider, useDispatch } from "react-redux";
-import store from "./redux/store";
+import { useDispatch } from "react-redux";
 import { populateUser } from "./redux/userSlice";
-import { populateCart } from "./redux/cart";
-import Orders from "./pages/Orders";
 import SpecificOrder from "./pages/SpecificOrder";
-import Auth from "./pages/Auth";
+import Product from "./pages/Product";
+import Orders from "./pages/Orders";
 
 const Layout = () => {
   return (
@@ -35,6 +33,7 @@ const App = () => {
     if (user) {
       const userObj = JSON.parse(user);
       setLogin(true);
+      //@ts-ignore
       dispatch(populateUser(userObj));
       //@ts-ignore
       // dispatch(populateCart(userObj.user.cart));
@@ -64,6 +63,10 @@ const App = () => {
         {
           path: "products",
           element: <ProductListing />,
+        },
+        {
+          path: "products/:productId",
+          element: <Product />,
         },
         {
           path: "orders",
