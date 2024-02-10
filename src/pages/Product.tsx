@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import store from "../redux/store";
-import { decrementCartProduct, incrementCartProduct } from "../redux/userSlice";
+import {
+  add2cart,
+  decrementCartProduct,
+  incrementCartProduct,
+} from "../redux/userSlice";
 
 const Product = () => {
   const productId = useParams()?.productId;
@@ -70,8 +74,14 @@ const Product = () => {
           console.log(result);
           // setItemInCartQuantity(itemInCartQuantity + 1);
           // @ts-ignore
-          dispatch(incrementCartProduct(cartItem));
-          navigation("/cart");
+          if (!itemInCartQuantity) {
+            // @ts-ignore
+            dispatch(add2cart(productDetails));
+          } else {
+            // @ts-ignore
+            dispatch(incrementCartProduct(cartItem));
+          }
+          // navigation("/cart");
         } else {
           alert(result?.message);
         }
@@ -175,8 +185,9 @@ const Product = () => {
               <Button
                 className="w-fit"
                 onClick={() => {
-                  // ? decrementItem(productId)
+                  //@ts-ignore
                   incrementItem(productDetails);
+                  // dispatch(add2cart(productDetails));
                 }}
               >
                 {itemInCartQuantity ? "REMOVE FROM CART" : "ADD TO CART"}
